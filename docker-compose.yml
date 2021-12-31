@@ -18,8 +18,8 @@ services:
       postgres_db: graph-node
       ipfs: "ipfs:5001"
       # Change next line if you want to connect to a different JSON-RPC endpoint
-      ethereum: 'local:http://host.docker.internal:8545'
-      #ethereum: "mainnet:https://api.s0.b.hmny.io"
+      #ethereum: 'local:http://host.docker.internal:8545'
+      ethereum: "mainnet:https://api.s0.b.hmny.io"
       GRAPH_LOG: info
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
