@@ -1,0 +1,154 @@
+type User @entity {
+  id: ID!
+  address: Bytes!
+  auctions: [Auction!]! @derivedFrom(field: "seller")
+  sales: [Sale!]! @derivedFrom(field: "seller")
+  buys: [Sale!]! @derivedFrom(field: "buyer")
+
+  nfts: [Nft!]! @derivedFrom(field: "currentOwner")
+}
+
+type Currency @entity {
+  id: ID!
+  address: Bytes!
+}
+
+type Market @entity {
+  id: ID!
+  active: Boolean!
+  token: Bytes!
+  name: String!
+  fee: BigInt!
+  creatorFee: BigInt!
+  reflectionFee: BigInt!
+  nfts: [Nft!]! @derivedFrom(field: "market")
+  totalAuctions: Int!
+  totalSellOrders: Int!
+  totalSales: Int!
+  totalNfts: Int!
+  currencyStats: [MarketCurrencyStats!]! @derivedFrom(field: "market")
+}
+
+type MarketCurrencyStats @entity {
+  id: ID!
+  market: Market!
+  currency: Currency!
+  floor: BigInt!
+  volume: BigInt!
+  fees: BigInt!
+  creatorFees: BigInt!
+  reflectionFees: BigInt!
+}
+
+type Nft @entity {
+  id: ID!
+  token: Bytes!
+  tokenId: BigInt!
+  market: Market!
+  auctions: [Auction!]! @derivedFrom(field: "nft")
+  sellOrders: [SellOrder!]! @derivedFrom(field: "nft")
+  sales: [Sale!] @derivedFrom(field: "nft")
+  lastSale: Sale
+
+  totalSellOrders: Int!
+  totalAuctions: Int!
+  totalSales: Int!
+
+  currencyStats: [NftCurrencyStats!]! @derivedFrom(field: "nft")
+
+  currentAuction: Auction
+  currentSellOrder: SellOrder
+
+  currentPrice: BigInt
+  currentCurrency: Currency
+
+  currentOwner: User
+}
+
+type NftCurrencyStats @entity {
+  id: ID!
+  nft: Nft!
+  currency: Currency!
+  volume: BigInt!
+  fees: BigInt!
+  creatorFees: BigInt!
+  reflectionFees: BigInt!
+}
+
+type Auction @entity {
+  id: ID!
+  market: Market!
+  nft: Nft!
+  tokenId: BigInt!
+  seller: User!
+  currency: Currency!
+  initialBid: BigInt!
+  timestamp: Int!
+  ended: Boolean!
+  endsAt: Int!
+  highestBid: BigInt!
+  highestBidder: Bytes
+  bids: [AuctionBid!]! @derivedFrom(field: "auction")
+  sale: AuctionSale @derivedFrom(field: "auction")
+}
+
+type AuctionBid @entity {
+  id: ID!
+  auction: Auction!
+  bidder: User!
+  value: BigInt!
+  timestamp: Int!
+}
+
+type SellOrder @entity {
+  id: ID!
+  market: Market!
+  nft: Nft!
+  tokenId: BigInt!
+  currency: Currency!
+  seller: User!
+  price: BigInt!
+  timestamp: Int!
+  sale: SellOrderSale @derivedFrom(field: "order")
+}
+
+interface Sale {
+  id: ID!
+  nft: Nft!
+  currency: Currency!
+  seller: User!
+  buyer: User!
+  price: BigInt!
+  fee: BigInt!
+  creatorFee: BigInt!
+  reflectionFee: BigInt!
+  timestamp: Int!
+}
+
+type AuctionSale implements Sale @entity {
+  id: ID!
+  nft: Nft!
+  auction: Auction!
+  currency: Currency!
+  seller: User!
+  buyer: User!
+  price: BigInt!
+  fee: BigInt!
+  creatorFee: BigInt!
+  reflectionFee: BigInt!
+  timestamp: Int!
+}
+
+type SellOrderSale implements Sale @entity {
+  id: ID!
+  nft: Nft!
+  order: SellOrder!
+  currency: Currency!
+  seller: User!
+  buyer: User!
+  price: BigInt!
+  fee: BigInt!
+  creatorFee: BigInt!
+  reflectionFee: BigInt!
+  timestamp: Int!
+}

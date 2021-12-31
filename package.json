@@ -1,0 +1,16 @@
+{
+  "name": "armoonia-marketplace",
+  "version": "0.1.0",
+  "scripts": {
+    "create": "graph create armoonia/armoonia-marketplace --node http://127.0.0.1:8020",
+    "remove": "graph remove armoonia/armoonia-marketplace --node http://127.0.0.1:8020",
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy armoonia/armoonia-marketplace --ipfs http://localhost:5001/ --node http://127.0.0.1:8020"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.20.0",
+    "@graphprotocol/graph-ts": "^0.20.0"
+  },
+  "dependencies": {}
+}
